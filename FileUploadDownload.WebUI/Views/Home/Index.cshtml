@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<form id="form" enctype="multipart/form-data">
+    <input type="file" name="file" id="file" />
+    <button>Upload</button>
+</form>
+
+<!--Upload List-->
+<ul id="list"></ul>
+
+@section scripts{
+
+    <script>
+        let uri = 'http://localhost:38389/api/file';
+
+        $('button').click(function (event) {
+
+            let form = $('#form');
+
+            let formdata = new FormData(form[0]);
+            event.preventDefault();
+
+          
+
+            $.ajax({
+                type: "POST",
+                url: uri + "/new",
+                contentType: false,
+                processData: false,
+                data: formdata,
+                success: function myfunction() {
+                    $.get(uri + "/", function (data) {
+                        $('#list').empty();
+                        if (data != null) {
+                            $.each(data, function (indx, item) {
+                                $('#list').append(`<li><a href='http://localhost:38389/api/file/get/${item}'>${item}</a></li>`);
+                            });
+                        } else {
+                            $('#list').append('<li>Non Element</li>')
+                        }
+
+                    });
+                }
+
+            });
+        });
+
+
+        $(document).ready(function () {
+            $.get(uri + "/", function (data) {
+
+                if (data != null) {
+                    $.each(data, function (indx, item) {
+                        $('#list').append(`<li><a href='http://localhost:38389/api/file/get/${item}'>${item}</a></li>`);
+                    });
+                } else {
+                    $('#list').append('<li>Non Element</li>')
+                }
+
+            });
+
+        })
+    </script>
+}
